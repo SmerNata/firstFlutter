@@ -14,10 +14,10 @@ class MyApp extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (context) => MyAppState(),
       child: MaterialApp(
-        title: 'Namer App',
+        title: 'Название приложения',
         theme: ThemeData(
           useMaterial3: true,
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepOrange),
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueGrey),
         ),
         home: MyHomePage(),
       ),
@@ -61,7 +61,7 @@ class _MyHomePageState extends State<MyHomePage> {
         page = FavoritesPage();
         break;
       default:
-        throw UnimplementedError('no widget for $selectedIndex');
+        throw UnimplementedError('нет виджета для $selectedIndex');
     }
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -74,11 +74,11 @@ class _MyHomePageState extends State<MyHomePage> {
                   destinations: [
                     NavigationRailDestination(
                       icon: Icon(Icons.home),
-                      label: Text('Home'),
+                      label: Text('Главная'),
                     ),
                     NavigationRailDestination(
                       icon: Icon(Icons.favorite),
-                      label: Text('Favorites'),
+                      label: Text('Избранное'),
                     ),
                   ],
                   selectedIndex: selectedIndex,
@@ -131,14 +131,14 @@ class GeneratorPage extends StatelessWidget {
                   appState.toggleFavorite();
                 },
                 icon: Icon(icon),
-                label: Text('Like'),
+                label: Text('Нравится'),
               ),
               SizedBox(width: 10),
               ElevatedButton(
                 onPressed: () {
                   appState.getNext();
                 },
-                child: Text('Next'),
+                child: Text('Следующие'),
               ),
             ],
           ),
@@ -151,10 +151,13 @@ class FavoritesPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var appState = context.watch<MyAppState>();
-
+    final theme = Theme.of(context); 
+    final style = theme.textTheme.headlineSmall!.copyWith(
+      fontWeight: FontWeight.w700,
+    );
     if (appState.favorites.isEmpty) {
       return Center(
-        child: Text('No favorites yet.'),
+        child: Text('Нет избранного.'),
       );
     }
 
@@ -162,8 +165,10 @@ class FavoritesPage extends StatelessWidget {
       children: [
         Padding(
           padding: const EdgeInsets.all(20),
-          child: Text('You have '
-              '${appState.favorites.length} favorites:'),
+          child: Text(
+            'У вас ${appState.favorites.length} избранных:',
+            style: style,
+          ),
         ),
         for (var pair in appState.favorites)
           ListTile(
@@ -186,7 +191,7 @@ class BigCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context); 
-    final style = theme.textTheme.displayMedium!.copyWith(
+    final style = theme.textTheme.displaySmall!.copyWith(
       color: theme.colorScheme.onPrimary,
     );
 
