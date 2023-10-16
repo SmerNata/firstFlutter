@@ -1,3 +1,15 @@
+class NewUserResponse {
+  final NewUser? data;
+
+  const NewUserResponse({required this.data});
+
+  factory NewUserResponse.fromJson(Map<String, dynamic> json) {
+    final data = json;
+    return NewUserResponse(
+      data: NewUser.fromJson(data),
+    );
+  }
+}
 class NewUser {
   String name;
   String job;

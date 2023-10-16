@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 
+import 'users_list.dart';
 import 'new_user.dart';
 import 'user.dart';
-import 'user_list.dart';
-
 class HomePage extends StatefulWidget {
   @override
   State<HomePage> createState() => _HomePageState();
@@ -16,10 +15,10 @@ class _HomePageState extends State<HomePage> {
     Widget page;
     switch (selectedIndex) {
       case 0:
-        page = UserPage();
+        page = UserListPage();
         break;
       case 1:
-        page = UserListPage();
+        page = UserPage();
         break;
       case 2:
         page = CreateUser();
@@ -37,12 +36,12 @@ class _HomePageState extends State<HomePage> {
                   extended: constraints.maxWidth >= 600,
                   destinations: [
                     NavigationRailDestination(
-                      icon: Icon(Icons.account_circle),
-                      label: Text('Пользователь'),
-                    ),
-                    NavigationRailDestination(
                       icon: Icon(Icons.list),
                       label: Text('Список пользователей'),
+                    ),
+                    NavigationRailDestination(
+                      icon: Icon(Icons.account_circle),
+                      label: Text('Пользователь'),
                     ),
                     NavigationRailDestination(
                       icon: Icon(Icons.add),

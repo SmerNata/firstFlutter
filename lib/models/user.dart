@@ -1,3 +1,27 @@
+class UserResponse {
+  final User? data;
+
+  const UserResponse({required this.data});
+
+  factory UserResponse.fromJson(Map<String, dynamic> json) {
+    final data = json['data'];
+    return UserResponse(
+      data: User.fromJson(data),
+    );
+  }
+}
+class UserListResponse {
+  final List<User?> data;
+
+  const UserListResponse({required this.data});
+
+  factory UserListResponse.fromJson(Map<String, dynamic> json) {
+    final list = json['data'] != null ? json['data'] as List : [];
+    return UserListResponse(
+      data: list.map((e) => User.fromJson(e)).toList(),
+    );
+  }
+}
 class User {
   User({
     required this.id,

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:test_app/models/new_user.dart';
 
-import '../models/dio.dart';
+import '../services/user_service.dart';
 
 class CreateUser extends StatefulWidget {
   const CreateUser({Key? key}) : super(key: key);
@@ -13,8 +13,9 @@ class CreateUser extends StatefulWidget {
 class _CreateUserState extends State<CreateUser> {
   late final TextEditingController _nameController;
   late final TextEditingController _jobController;
-  NewUser? retrievedUser;
-  final DioRequest _dioRequest = DioRequest();
+  final UserService _userService = UserService();
+  NewUserResponse? userResponse;
+  NewUser? user;
 
   bool isCreating = false;
 
@@ -55,7 +56,13 @@ class _CreateUserState extends State<CreateUser> {
                       job: _jobController.text,
                     );
 
-                    retrievedUser = await _dioRequest.createUser(newUser: newUser);
+                    var result = await _userService.createUser(newUser: newUser);
+                    if (result.status) {
+                      userResponse = result.data;
+                      user = userResponse?.data;
+                    } else {
+                      user = null;
+                    }
                   }
 
                   setState(() {
@@ -67,18 +74,18 @@ class _CreateUserState extends State<CreateUser> {
                   style: TextStyle(fontSize: 20.0),
                 ),
               ),
-        if (retrievedUser != null) 
+        if (user != null) 
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text('ID: ${retrievedUser!.id}'),
-                Text('Name: ${retrievedUser!.name}'),
-                Text('Job: ${retrievedUser!.job}'),
+                Text('ID: ${user!.id}'),
+                Text('Name: ${user!.name}'),
+                Text('Job: ${user!.job}'),
                 Text(
-                  'Created at: ${retrievedUser!.createdAt}',
+                  'Created at: ${user!.createdAt}',
                 ),
               ],
             ),

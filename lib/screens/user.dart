@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:test_app/models/dio.dart';
-import 'package:mobx/mobx.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
 
 import '../models/user.dart';
-import '../viewmodel/user_view_model.dart';
+import '../services/user_service.dart';
 
 class UserPage extends StatefulWidget {
   @override
@@ -13,9 +10,11 @@ class UserPage extends StatefulWidget {
 
 class _UserPageState extends State<UserPage> {
   late final TextEditingController _idController;
-  final DioRequest _dioRequest = DioRequest();
+  final UserService _userService = UserService();
   bool isGetUser = false;
-  final _userViewModel = UserViewModel();
+  UserResponse? userResponse;
+  User? user;
+  String errorText = '';
   @override
   void initState() {
     _idController = TextEditingController();
@@ -41,7 +40,20 @@ class _UserPageState extends State<UserPage> {
                   });
 
                   if (_idController.text != '') {
-                    _userViewModel.getUser(_idController.text);
+                    var result = await _userService.getUser(_idController.text);
+                    if (result.status) {
+                      userResponse = result.data;
+                      user = userResponse?.data;
+                    } else {
+                      user = null;
+                      switch (result.genericError) {
+                        case 'DATA_NOT_FOUND':
+                            errorText = 'Пользователь не найден';
+                          break;
+                        default:
+                            errorText = 'Произошла ошибка. Попробуйте позже.';
+                      }
+                    }
                   }
 
                   setState(() {
@@ -54,27 +66,29 @@ class _UserPageState extends State<UserPage> {
                 ),
               ),
         SizedBox(height: 16.0),
-        Observer(
-          builder: (_) { 
-            return _userViewModel.isLoading ? 
-            CircularProgressIndicator() : 
-            Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Image.network(_userViewModel.user!.avatar),
-                SizedBox(height: 8.0),
-                Text(
-                  '${_userViewModel.user!.firstName} ${_userViewModel.user!.lastName}',
-                  style: TextStyle(fontSize: 16.0),
-                ),
-                Text(
-                  _userViewModel.user!.email,
-                  style: TextStyle(fontSize: 16.0),
-                ),
-              ],
-            );
-          }
-        ),
+        user != null ?
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Image.network(user!.avatar),
+              SizedBox(height: 8.0),
+              Text(
+                '${user!.firstName} ${user!.lastName}',
+                style: TextStyle(fontSize: 16.0),
+              ),
+              Text(
+                user!.email,
+                style: TextStyle(fontSize: 16.0),
+              ),
+            ],
+          )
+        : Text(
+            errorText,
+            style: TextStyle(
+              color: Colors.red,
+              fontSize: 16.0
+              ),
+          ),
       ],
     );
   }
