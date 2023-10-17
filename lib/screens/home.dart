@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'login.dart';
 import 'users_list.dart';
 import 'new_user.dart';
 import 'user.dart';
@@ -15,12 +16,15 @@ class _HomePageState extends State<HomePage> {
     Widget page;
     switch (selectedIndex) {
       case 0:
-        page = UserListPage();
+        page = LoginPage();
         break;
       case 1:
-        page = UserPage();
+        page = UserListPage();
         break;
       case 2:
+        page = UserPage();
+        break;
+      case 3:
         page = CreateUser();
         break;
       default:
@@ -35,6 +39,10 @@ class _HomePageState extends State<HomePage> {
                 child: NavigationRail(
                   extended: constraints.maxWidth >= 600,
                   destinations: [
+                    NavigationRailDestination(
+                      icon: Icon(Icons.login),
+                      label: Text('Вход'),
+                    ),
                     NavigationRailDestination(
                       icon: Icon(Icons.list),
                       label: Text('Список пользователей'),
